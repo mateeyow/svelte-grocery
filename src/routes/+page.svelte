@@ -16,8 +16,8 @@
 	<title>Grocery List</title>
 </svelte:head>
 
-<div class="w-full p-4 m-10 flex flex-col items-center">
-	<div class="w-9/12 flex flex-col">
+<div class="w-full p-2 m-4 md:p-4 md:m-10 flex flex-col items-center">
+	<div class="w-full md:w-9/12 flex flex-col">
 		<label class="relative w-full">
 			<input
 				type="text"

@@ -11,8 +11,6 @@
 			this.blur();
 		}
 	}
-
-	$: console.log(grocery);
 </script>
 
 <li class="flex items-center text-xl">
