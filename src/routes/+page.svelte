@@ -33,7 +33,7 @@
 				<h3 class="text-xl text-slate-500">No groceries yet</h3>
 			{/if}
 			<ul>
-				{#each $allGroceries as grocery}
+				{#each $allGroceries as grocery (grocery.item)}
 					<GroceryItem {grocery} />
 				{/each}
 			</ul>
