@@ -1,5 +1,7 @@
 <script>
-  import "../app.css";
+	import '../app.css';
 </script>
 
-<slot />
+<main class="bg-slate-50 flex h-screen w-full">
+	<slot />
+</main>
