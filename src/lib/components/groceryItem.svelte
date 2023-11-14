@@ -5,12 +5,26 @@
 
 	export let grocery: Grocery;
 
-	function onOnfocus(this: HTMLSpanElement, evt: KeyboardEvent) {
+	function onKeydown(this: HTMLSpanElement, evt: KeyboardEvent) {
 		if (evt.key === 'Enter' || evt.key === 'Tab') {
 			evt.preventDefault();
 			this.blur();
 		}
 	}
+
+	function onBlur(this: HTMLInputElement) {
+		const { value } = this;
+
+		if (!value) {
+			groceries.remove(grocery.item);
+		}
+
+		groceries.rename(value, grocery.item);
+	}
+
+	const onAddChild = () => {
+		console.log('new child');
+	};
 </script>
 
 <li class="flex items-center text-xl">
@@ -22,19 +36,26 @@
 	/>
 	<input
 		type="text"
-		bind:value={grocery.item}
-		on:keydown={onOnfocus}
+		value={grocery.item}
+		on:keydown={onKeydown}
+		on:blur={onBlur}
 		class="text-slate-800 mx-4 my-2 disabled:bg-transparent focus:border-slate-800 focus-visible:outline-slate-400 py-2 ps-1"
 		class:line-through={grocery.purchased}
 		class:text-slate-400={grocery.purchased}
 		disabled={grocery.purchased}
 	/>
-	<!-- <IconButton icon="bx:plus" /> -->
-	<div class="ms-auto text-slate-500 text-2xl">
+	<div class="ms-auto text-slate-500 text-2xl flex">
+		<IconButton
+			icon="bx:plus"
+			componentClass="mr-4"
+			title="Add child grocery"
+			on:click={onAddChild}
+		/>
 		<IconButton
 			icon="bx:trash"
 			on:click={() => groceries.remove(grocery.item)}
 			color="bg-slate-300"
+			title="Delete grocery"
 		/>
 	</div>
 </li>

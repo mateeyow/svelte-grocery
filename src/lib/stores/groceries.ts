@@ -4,44 +4,50 @@ import { chosenFilter } from "$lib/stores/filter";
 export type Grocery = {
   item: string;
   purchased: boolean;
+  groceries: Grocery[];
 }
 
-type GroceryStore = Map<string, Grocery>
-
 function createGroceryStore() {
-  const defaultGroceries = new Map<string, Grocery>()
+  let defaultGroceries: Grocery[] = []
 
   if (typeof localStorage !== 'undefined') {
     const localGroceries = window.localStorage.getItem('groceries')
-    const groceryArr = JSON.parse(localGroceries || '[]') as Grocery[]
-
-    groceryArr.forEach(grocery => {
-      defaultGroceries.set(grocery.item, grocery)
-    })
+    defaultGroceries = JSON.parse(localGroceries || '[]') as Grocery[]
   }
-  const { subscribe, update } = writable<GroceryStore>(defaultGroceries);
+
+  const { subscribe, update, ...rest } = writable<Grocery[]>(defaultGroceries);
 
   return {
     subscribe,
+    update,
+    ...rest,
     add: (item: string) => update(groceries => {
-      if (!groceries.has(item)) {
-        groceries.set(item, { item, purchased: false });
+      if (!groceries.find(grocery => grocery.item === item)) {
+        groceries.push({ item, purchased: false, groceries: [] });
       }
 
       return groceries;
     }),
     remove: (item: string) => update(groceries => {
-      groceries.delete(item)
-      return groceries
+      return groceries.filter(grocery => grocery.item !== item)
     }),
     changeState: (item: string) => update(groceries => {
-      const grocery = groceries.get(item)
-      if (grocery) {
-        grocery.purchased = !grocery.purchased
-        groceries.set(item, grocery)
-      }
+      return groceries.map(grocery => {
+        if (grocery.item === item) {
+          grocery.purchased = !grocery.purchased
+        }
 
-      return groceries
+        return grocery
+      })
+    }),
+    rename: (newName: string, oldName: string) => update(groceries => {
+      return groceries.map(grocery => {
+        if (grocery.item === oldName) {
+          grocery.item = newName
+        }
+
+        return grocery
+      })
     })
   }
 }
@@ -50,21 +56,18 @@ export const groceries = createGroceryStore()
 
 groceries.subscribe(groceries => {
   if (typeof localStorage !== 'undefined') {
-    console.log('groceries', groceries);
-    localStorage.setItem('groceries', JSON.stringify(Array.from(groceries.values())))
+    localStorage.setItem('groceries', JSON.stringify(groceries))
   }
 })
 
 export const allGroceries = derived([groceries, chosenFilter], ([$groceries, chosenFilter]) => {
-  const groceryArr = Array.from($groceries.values())
-
   if (chosenFilter === 'bought') {
-    return groceryArr.filter(grocery => grocery.purchased)
+    return $groceries.filter(grocery => grocery.purchased)
   }
 
   if (chosenFilter === 'to buy') {
-    return groceryArr.filter(grocery => !grocery.purchased)
+    return $groceries.filter(grocery => !grocery.purchased)
   }
 
-  return groceryArr
+  return $groceries
 })
