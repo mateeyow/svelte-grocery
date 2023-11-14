@@ -1,4 +1,5 @@
 import { writable, derived } from "svelte/store";
+import { chosenFilter } from "$lib/stores/filter";
 
 export type Grocery = {
   item: string;
@@ -35,14 +36,16 @@ function createGroceryStore() {
 
 export const groceries = createGroceryStore()
 
-export const allGroceries = derived(groceries, $groceries => {
-  return Array.from($groceries.values())
+export const allGroceries = derived([groceries, chosenFilter], ([$groceries, chosenFilter]) => {
+  const groceryArr = Array.from($groceries.values())
+
+  if (chosenFilter === 'bought') {
+    return groceryArr.filter(grocery => grocery.purchased)
+  }
+
+  if (chosenFilter === 'to buy') {
+    return groceryArr.filter(grocery => !grocery.purchased)
+  }
+
+  return groceryArr
 })
-
-export const purchasedGroceries = derived(groceries, $groceries => {
-  return Array.from($groceries.values()).filter(grocery => grocery.purchased);
-});
-
-export const availableGroceries = derived(groceries, $groceries => {
-  return Array.from($groceries.values()).filter(grocery => !grocery.purchased);
-});
