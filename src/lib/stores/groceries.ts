@@ -6,8 +6,20 @@ export type Grocery = {
   purchased: boolean;
 }
 
+type GroceryStore = Map<string, Grocery>
+
 function createGroceryStore() {
-  const { subscribe, update } = writable<Map<string, Grocery>>(new Map());
+  const defaultGroceries = new Map<string, Grocery>()
+
+  if (typeof localStorage !== 'undefined') {
+    const localGroceries = window.localStorage.getItem('groceries')
+    const groceryArr = JSON.parse(localGroceries || '[]') as Grocery[]
+
+    groceryArr.forEach(grocery => {
+      defaultGroceries.set(grocery.item, grocery)
+    })
+  }
+  const { subscribe, update } = writable<GroceryStore>(defaultGroceries);
 
   return {
     subscribe,
@@ -35,6 +47,13 @@ function createGroceryStore() {
 }
 
 export const groceries = createGroceryStore()
+
+groceries.subscribe(groceries => {
+  if (typeof localStorage !== 'undefined') {
+    console.log('groceries', groceries);
+    localStorage.setItem('groceries', JSON.stringify(Array.from(groceries.values())))
+  }
+})
 
 export const allGroceries = derived([groceries, chosenFilter], ([$groceries, chosenFilter]) => {
   const groceryArr = Array.from($groceries.values())

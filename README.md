@@ -9,8 +9,9 @@ This is like a Todo application but for groceries that enables you to create a l
 - [x] Add, update or delete item in grocery list
 - [x] Mark an item as done or purchased
 - [x] Add filter for items base on their status
+- [x] Items in the grocery list should be saved in localstorage
 - [ ] Nested grocery list until 2 levels
-- [ ] Items in the grocery list should be saved in localstorage
+- [ ] Add animation
 
 ## Developing
 

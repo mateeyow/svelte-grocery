@@ -14,7 +14,12 @@
 </script>
 
 <li class="flex items-center text-xl">
-	<input type="checkbox" bind:checked={grocery.purchased} class="w-6 h-6" />
+	<input
+		type="checkbox"
+		checked={grocery.purchased}
+		on:change={() => groceries.changeState(grocery.item)}
+		class="w-6 h-6"
+	/>
 	<input
 		type="text"
 		bind:value={grocery.item}
