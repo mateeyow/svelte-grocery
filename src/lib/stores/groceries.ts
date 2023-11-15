@@ -7,7 +7,7 @@ export type Grocery = {
   groceries: Grocery[];
 }
 
-function createGroceryStore() {
+export function createGroceryStore() {
   let defaultGroceries: Grocery[] = []
 
   if (typeof localStorage !== 'undefined') {
@@ -44,6 +44,15 @@ function createGroceryStore() {
       return groceries.map(grocery => {
         if (grocery.item === oldName) {
           grocery.item = newName
+        }
+
+        return grocery
+      })
+    }),
+    addChild: (parent: string) => update(groceries => {
+      return groceries.map(grocery => {
+        if (grocery.item === parent) {
+          grocery.groceries.push({ item: '', purchased: false, groceries: [] })
         }
 
         return grocery

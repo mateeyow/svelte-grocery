@@ -48,11 +48,6 @@
 			<ul>
 				{#each $allGroceries as grocery (grocery.item)}
 					<GroceryItem {grocery} />
-					<div class="ml-10">
-						{#each grocery.groceries as childGrocery (childGrocery.item)}
-							<GroceryItem grocery={childGrocery} />
-						{/each}
-					</div>
 				{/each}
 			</ul>
 		</div>

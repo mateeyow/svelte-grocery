@@ -5,6 +5,8 @@
 
 	export let grocery: Grocery;
 
+	let listEl: HTMLLIElement;
+
 	function onKeydown(this: HTMLSpanElement, evt: KeyboardEvent) {
 		if (evt.key === 'Enter' || evt.key === 'Tab') {
 			evt.preventDefault();
@@ -23,11 +25,20 @@
 	}
 
 	const onAddChild = () => {
-		console.log('new child');
+		groceries.addChild(grocery.item);
+		if (listEl) {
+			console.log('listEl', listEl);
+			console.log('listEl.nextElementSibling?.querySelector', listEl.nextElementSibling);
+			console.log(
+				'listEl.nextElementSibling?.querySelector',
+				listEl.nextElementSibling?.querySelector('li')
+			);
+			// listEl.nextElementSibling?.querySelector('input[type="text"]')?.focus();
+		}
 	};
 </script>
 
-<li class="flex items-center text-xl">
+<li class="flex items-center text-xl" bind:this={listEl}>
 	<input
 		type="checkbox"
 		checked={grocery.purchased}
