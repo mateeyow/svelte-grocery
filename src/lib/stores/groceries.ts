@@ -7,8 +7,8 @@ export type Grocery = {
   groceries: Grocery[];
 }
 
-export function createGroceryStore() {
-  let defaultGroceries: Grocery[] = []
+export function createGroceryStore(groceryStore: Grocery[] = []) {
+  let defaultGroceries: Grocery[] = groceryStore
 
   if (typeof localStorage !== 'undefined') {
     const localGroceries = window.localStorage.getItem('groceries')
