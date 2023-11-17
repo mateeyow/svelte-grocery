@@ -1,8 +1,12 @@
 <script lang="ts">
 	import IconButton from '$lib/components/iconButton.svelte';
+	import { groceries } from '$lib/stores/groceries';
 
+	export let id: string;
 	export let onAddChild: null | (() => Promise<void>) = null;
-	export let onRemoveGrocery: () => void;
+	export let onRemoveGrocery = () => {
+		groceries.remove(id);
+	};
 </script>
 
 <div class="ms-auto text-slate-500 text-2xl flex">

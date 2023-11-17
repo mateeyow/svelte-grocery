@@ -1,15 +1,16 @@
 <script lang="ts">
-	import { groceries } from '$lib/stores/groceries';
+	import { groceries as groceryStore } from '$lib/stores/groceries';
 
 	export let purchased: boolean;
 	export let item: string;
+	export let id: string;
 
 	export function focus() {
 		inputEl.focus();
 	}
 
 	export function changeState() {
-		groceries.changeState(item);
+		groceryStore.changeState(id);
 	}
 
 	let inputEl: HTMLInputElement;
@@ -25,17 +26,17 @@
 		const { value } = this;
 
 		if (!value) {
-			groceries.remove(item);
+			groceryStore.remove(id);
 		}
 
-		groceries.rename(value, item);
+		groceryStore.addOrRename(value, id);
 	}
 </script>
 
 <input type="checkbox" checked={purchased} on:change={changeState} class="w-6 h-6" />
 <input
 	type="text"
-	value={item}
+	bind:value={item}
 	on:keydown={onKeydown}
 	on:blur={onBlur}
 	class="text-slate-800 mx-4 my-2 disabled:bg-transparent focus:border-slate-800 focus-visible:outline-slate-400 py-2 ps-1"

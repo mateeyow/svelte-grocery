@@ -7,7 +7,7 @@
 
 	const onEnter = (evt: KeyboardEvent) => {
 		if (evt.key === 'Enter') {
-			groceries.add(value);
+			groceries.addOrRename(value);
 			value = '';
 		}
 	};
@@ -46,7 +46,7 @@
 				<h3 class="text-xl text-slate-500">No groceries yet</h3>
 			{/if}
 			<ul>
-				{#each $allGroceries as grocery (grocery.item)}
+				{#each $allGroceries as grocery (grocery.id)}
 					<GroceryItem {grocery} />
 				{/each}
 			</ul>
