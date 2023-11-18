@@ -4,6 +4,7 @@
 	export let purchased: boolean;
 	export let item: string;
 	export let id: string;
+	export let childId: string = '';
 
 	export function focus() {
 		inputEl.focus();
@@ -26,10 +27,11 @@
 		const { value } = this;
 
 		if (!value) {
-			groceryStore.remove(id);
+			groceryStore.remove(id, childId);
+			return;
 		}
 
-		groceryStore.addOrRename(value, id);
+		groceryStore.addOrRename(value, id, childId);
 	}
 </script>
 
