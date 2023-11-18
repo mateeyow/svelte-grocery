@@ -11,7 +11,7 @@
 	}
 
 	export function changeState() {
-		groceryStore.changeState(id);
+		groceryStore.changeState(id, childId);
 	}
 
 	let inputEl: HTMLInputElement;

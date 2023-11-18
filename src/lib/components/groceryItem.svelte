@@ -14,27 +14,16 @@
 
 		await tick();
 		inputEl.focus();
-		// groceries.addChild(grocery.item);
-		// await tick();
-		// if (inputEl) {
-		// 	inputEl.focus();
-		// }
 	};
-
-	$: console.log($groceries);
 </script>
 
 <li>
 	<div class="flex items-center text-xl">
 		<GroceryInput {...grocery} />
-		<GroceryActions
-			{onAddChild}
-			onRemoveGrocery={() => groceries.remove(grocery.id)}
-			id={grocery.id}
-		/>
+		<GroceryActions {onAddChild} id={grocery.id} />
 	</div>
 	<ul class="mx-9">
-		{#each [...grocery.groceries] as [parentId, childGrocery]}
+		{#each [...grocery.groceries] as [_, childGrocery]}
 			<li>
 				<div class="flex items-center text-xl">
 					<GroceryInput
@@ -43,7 +32,7 @@
 						id={grocery.id}
 						childId={childGrocery.id}
 					/>
-					<!-- <GroceryActions onRemoveGrocery={() => console.log('remove')} /> -->
+					<GroceryActions childId={childGrocery.id} id={grocery.id} />
 				</div>
 			</li>
 		{/each}

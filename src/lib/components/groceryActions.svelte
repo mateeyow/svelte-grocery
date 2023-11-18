@@ -3,9 +3,10 @@
 	import { groceries } from '$lib/stores/groceries';
 
 	export let id: string;
+	export let childId = '';
 	export let onAddChild: null | (() => Promise<void>) = null;
 	export let onRemoveGrocery = () => {
-		groceries.remove(id);
+		groceries.remove(id, childId);
 	};
 </script>
 
