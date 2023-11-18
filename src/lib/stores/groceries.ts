@@ -29,9 +29,15 @@ function createGroceryStore() {
     const localGroceries = window.localStorage.getItem('groceries')
     const groceryArr = JSON.parse(localGroceries || '[]') as GroceryData[]
     defaultGroceries = new Map(groceryArr.map(record => {
-      const groceryData = new Map(record.groceries.map((child) => [child.id, { ...child, groceries: new Map() }]))
+      const groceryData = new Map(record.groceries.map((child) => {
+        itemStore.set(child.item, child.id)
+        return [child.id, { ...child, groceries: new Map() }]
+      }))
+
+      itemStore.set(record.item, record.id)
       return [record.id, { ...record, groceries: groceryData }]
     }))
+    console.log('itemStore', itemStore);
   }
 
   const { subscribe, update, } = writable<GroceryStore>(defaultGroceries);
@@ -43,11 +49,14 @@ function createGroceryStore() {
       return parentGroceries
     }
 
+    itemStore.delete(childGrocery.item)
+    itemStore.set(item, childId)
     childGrocery.item = item
     return parentGroceries
   }
 
   const addOrRenameParent = (id: string, item: string, groceries?: GroceryMap): GroceryMap => {
+    itemStore.set(item, id)
     // New
     if (!groceries) {
       return {
@@ -59,6 +68,7 @@ function createGroceryStore() {
     }
 
     // Rename
+    itemStore.delete(groceries.item)
     groceries.item = item
     return groceries
   }
@@ -68,6 +78,7 @@ function createGroceryStore() {
     update,
     addOrRename: (item: string, id?: string, childId?: string) => update(groceries => {
       const oldItem = itemStore.get(item)
+      console.log('itemStore', itemStore);
 
       // Do nothing if the item is already in the list
       if (oldItem) {
@@ -82,30 +93,26 @@ function createGroceryStore() {
 
       const updatedGrocery = childId && data ? renameChild(item, childId, data) : addOrRenameParent(id, item, data)
 
-      // Remove previous item if it exists as we are renaming them
-      if (itemStore.has(data?.item ?? '')) {
-        itemStore.delete(data?.item ?? '')
-      }
-
       groceries.set(id, updatedGrocery)
-      itemStore.set(item, id)
 
       return groceries
     }),
     remove: (id: string, childId?: string) => update(groceries => {
+      console.log('itemStore', itemStore);
       const groceryData = groceries.get(id)
       if (!groceryData) {
         return groceries
       }
 
       if (childId) {
+        itemStore.delete(groceryData.groceries.get(childId)?.item ?? '')
         groceryData.groceries.delete(childId)
         groceries = groceries.set(id, groceryData)
       } else {
+        itemStore.delete(groceryData.item)
         groceries.delete(id)
       }
 
-      itemStore.delete(groceryData.item)
 
       return groceries
     }),
@@ -160,7 +167,6 @@ function createGroceryStore() {
 export const groceries = createGroceryStore()
 
 groceries.subscribe(groceries => {
-  console.log('groceries', groceries);
   if (typeof localStorage !== 'undefined') {
     const groceryArr = Array.from(groceries.values()).map(record => {
       return {
