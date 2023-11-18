@@ -1,11 +1,11 @@
 <script lang="ts">
-	import type { Grocery } from '$lib/stores/groceries';
+	import type { GroceryMap } from '$lib/stores/groceries';
 	import { groceries } from '$lib/stores/groceries';
 	import GroceryActions from '$lib/components/groceryActions.svelte';
 	import GroceryInput from '$lib/components/groceryInput.svelte';
 	import { tick, type SvelteComponent } from 'svelte';
 
-	export let grocery: Grocery;
+	export let grocery: GroceryMap;
 
 	let inputEl: SvelteComponent;
 

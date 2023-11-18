@@ -1,31 +1,42 @@
 import { writable, derived } from "svelte/store";
 import { chosenFilter } from "$lib/stores/filter";
 
-export type Grocery = {
+export type GroceryMap = {
   item: string;
   id: string;
   purchased: boolean;
   groceries: GroceryStore;
 }
 
-export type GroceryStore = Map<string, Grocery>
+type GroceryData = {
+  item: string;
+  id: string;
+  purchased: boolean;
+  groceries: GroceryData[];
+}
+
+export type GroceryStore = Map<string, GroceryMap>
 
 const generateID = () => {
   return crypto.randomUUID()
 }
 
 function createGroceryStore() {
-  const defaultGroceries: GroceryStore = new Map()
+  let defaultGroceries: GroceryStore = new Map()
   const itemStore = new Map<string, string>();
 
-  // if (typeof localStorage !== 'undefined') {
-  //   const localGroceries = window.localStorage.getItem('groceries')
-  //   defaultGroceries = JSON.parse(localGroceries || '[]') as Grocery[]
-  // }
+  if (typeof localStorage !== 'undefined') {
+    const localGroceries = window.localStorage.getItem('groceries')
+    const groceryArr = JSON.parse(localGroceries || '[]') as GroceryData[]
+    defaultGroceries = new Map(groceryArr.map(record => {
+      const groceryData = new Map(record.groceries.map((child) => [child.id, { ...child, groceries: new Map() }]))
+      return [record.id, { ...record, groceries: groceryData }]
+    }))
+  }
 
   const { subscribe, update, } = writable<GroceryStore>(defaultGroceries);
 
-  const renameChild = (item: string, childId: string, parentGroceries: Grocery): Grocery => {
+  const renameChild = (item: string, childId: string, parentGroceries: GroceryMap): GroceryMap => {
     const childGrocery = parentGroceries.groceries.get(childId)
 
     if (!childGrocery) {
@@ -36,7 +47,7 @@ function createGroceryStore() {
     return parentGroceries
   }
 
-  const addOrRenameParent = (id: string, item: string, groceries?: Grocery): Grocery => {
+  const addOrRenameParent = (id: string, item: string, groceries?: GroceryMap): GroceryMap => {
     // New
     if (!groceries) {
       return {
@@ -148,13 +159,20 @@ function createGroceryStore() {
 
 export const groceries = createGroceryStore()
 
-// groceries.subscribe(groceries => {
-//   if (typeof localStorage !== 'undefined') {
-//     localStorage.setItem('groceries', JSON.stringify(groceries))
-//   }
-// })
+groceries.subscribe(groceries => {
+  console.log('groceries', groceries);
+  if (typeof localStorage !== 'undefined') {
+    const groceryArr = Array.from(groceries.values()).map(record => {
+      return {
+        ...record,
+        groceries: Array.from(record.groceries.values())
+      }
+    })
+    localStorage.setItem('groceries', JSON.stringify(groceryArr))
+  }
+})
 
-export const convertToArr = (mapItems: GroceryStore): Grocery[] => {
+export const convertToArr = (mapItems: GroceryStore): GroceryMap[] => {
   return Array.from(mapItems.values())
 }
 
