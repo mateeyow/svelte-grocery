@@ -37,7 +37,6 @@ function createGroceryStore() {
       itemStore.set(record.item, record.id)
       return [record.id, { ...record, groceries: groceryData }]
     }))
-    console.log('itemStore', itemStore);
   }
 
   const { subscribe, update, } = writable<GroceryStore>(defaultGroceries);
@@ -78,7 +77,6 @@ function createGroceryStore() {
     update,
     addOrRename: (item: string, id?: string, childId?: string) => update(groceries => {
       const oldItem = itemStore.get(item)
-      console.log('itemStore', itemStore);
 
       // Do nothing if the item is already in the list
       if (oldItem) {
@@ -98,7 +96,6 @@ function createGroceryStore() {
       return groceries
     }),
     remove: (id: string, childId?: string) => update(groceries => {
-      console.log('itemStore', itemStore);
       const groceryData = groceries.get(id)
       if (!groceryData) {
         return groceries
