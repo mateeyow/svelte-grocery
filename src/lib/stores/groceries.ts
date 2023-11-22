@@ -8,7 +8,7 @@ export type GroceryMap = {
   groceries: GroceryStore;
 }
 
-type GroceryData = {
+export type GroceryData = {
   item: string;
   id: string;
   purchased: boolean;

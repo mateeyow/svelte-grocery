@@ -1,11 +1,12 @@
 <script lang="ts">
 	import GroceryItem from '$lib/components/groceryItem.svelte';
-	import { groceries, allGroceries } from '$lib/stores/groceries';
+	import { groceries, allGroceries, type GroceryMap } from '$lib/stores/groceries';
 	import { chosenFilter, filters } from '$lib/stores/filter';
 	import { slide, fade } from 'svelte/transition';
 	import { sineIn } from 'svelte/easing';
 
 	let value = '';
+	const duration = 150;
 
 	const onEnter = (evt: KeyboardEvent) => {
 		if (evt.key === 'Enter') {
@@ -51,8 +52,8 @@
 				{#each $allGroceries as grocery, index (grocery.id)}
 					<li
 						class="bg-white mb-4 px-4 py-2 rounded-md shadow-md"
-						in:slide={{ duration: 150, easing: sineIn, axis: 'x' }}
-						out:slide={{ duration: 150, easing: sineIn, axis: 'x' }}
+						in:slide={{ duration, easing: sineIn, axis: 'x' }}
+						out:slide={{ duration, easing: sineIn, axis: 'x' }}
 					>
 						<GroceryItem {grocery} />
 					</li>
