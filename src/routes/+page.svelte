@@ -18,6 +18,7 @@
 
 <svelte:head>
 	<title>Grocery List</title>
+	<meta name="description" content="A grocery list app built with SvelteKit" />
 </svelte:head>
 
 <div class="w-full p-2 m-4 md:p-4 md:m-10 flex flex-col items-center">
