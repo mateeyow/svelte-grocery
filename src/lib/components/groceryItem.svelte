@@ -17,24 +17,22 @@
 	};
 </script>
 
-<li>
-	<div class="flex items-center text-xl">
-		<GroceryInput {...grocery} />
-		<GroceryActions {onAddChild} id={grocery.id} />
-	</div>
-	<ul class="mx-9">
-		{#each [...grocery.groceries] as [_, childGrocery]}
-			<li>
-				<div class="flex items-center text-xl">
-					<GroceryInput
-						bind:this={inputEl}
-						{...childGrocery}
-						id={grocery.id}
-						childId={childGrocery.id}
-					/>
-					<GroceryActions childId={childGrocery.id} id={grocery.id} />
-				</div>
-			</li>
-		{/each}
-	</ul>
-</li>
+<div class="flex items-center text-xl">
+	<GroceryInput {...grocery} />
+	<GroceryActions {onAddChild} id={grocery.id} />
+</div>
+<ul class="mx-9">
+	{#each [...grocery.groceries] as [_, childGrocery]}
+		<li>
+			<div class="flex items-center text-xl">
+				<GroceryInput
+					bind:this={inputEl}
+					{...childGrocery}
+					id={grocery.id}
+					childId={childGrocery.id}
+				/>
+				<GroceryActions childId={childGrocery.id} id={grocery.id} />
+			</div>
+		</li>
+	{/each}
+</ul>

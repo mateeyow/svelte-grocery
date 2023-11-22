@@ -2,6 +2,8 @@
 	import GroceryItem from '$lib/components/groceryItem.svelte';
 	import { groceries, allGroceries } from '$lib/stores/groceries';
 	import { chosenFilter, filters } from '$lib/stores/filter';
+	import { slide, fade } from 'svelte/transition';
+	import { sineIn } from 'svelte/easing';
 
 	let value = '';
 
@@ -41,13 +43,19 @@
 			{/each}
 		</div>
 
-		<div class="mt-14 bg-white p-4 rounded-md">
+		<div class="mt-14">
 			{#if $allGroceries.length === 0}
-				<h3 class="text-xl text-slate-500">No groceries yet</h3>
+				<h3 class="text-xl text-slate-500" in:fade={{ delay: 150 }}>No groceries yet</h3>
 			{/if}
 			<ul>
-				{#each $allGroceries as grocery (grocery.id)}
-					<GroceryItem {grocery} />
+				{#each $allGroceries as grocery, index (grocery.id)}
+					<li
+						class="bg-white mb-4 px-4 py-2 rounded-md shadow-md"
+						in:slide={{ duration: 150, easing: sineIn, axis: 'x' }}
+						out:slide={{ duration: 150, easing: sineIn, axis: 'x' }}
+					>
+						<GroceryItem {grocery} />
+					</li>
 				{/each}
 			</ul>
 		</div>
